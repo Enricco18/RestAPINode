@@ -1,15 +1,17 @@
-const http = require('http');
-const url = require('url');
+const {Router} = require('./app/classes/Router');
 
-const app =  http.createServer((req,res)=>{
-    //Eu poderia usar só o .end() passando a msg, mas quis deixar mais visível cada função
-    res.write("Hello World\n");
-    res.end();
-});
+const app = new Router();
 
+app.get("oi",(req,res)=>{
+    res.data = {"oi":"oi"}
+    return res;
+})
+
+app.get("/",(req,res)=>{
+    res.httpCode = 201;
+    res.data = {"message":"Hello World!"};
+    return res;
+})
 app.listen(3000,()=>{
     console.log("Server running on port 3000")
 })
-
-
-console.log("hw!");
