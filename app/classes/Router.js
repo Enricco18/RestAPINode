@@ -4,10 +4,13 @@ const url = require('url');
 const { StringDecoder } = require('string_decoder');
 const decoder = new StringDecoder("utf-8");
 
+var self;
+
 class Router{
     constructor(credentials){
+        self = this;
 
-        this.server = typeof(credentials) ==="undefined"?http.createServer((req,res)=>this._unfiedSrv(req,res,this.routes)):https.createServer(credentials,(req,res)=>this._unfiedSrv(req,res,this.routes));
+        this.server = typeof(credentials) ==="undefined"?http.createServer(this._unfiedSrv):https.createServer(credentials,this._unfiedSrv);
         this.routes = {
             default:(req,res)=> {
                                 res.httpCode= 404
@@ -17,7 +20,7 @@ class Router{
         };
     }
 
-    _unfiedSrv(req,res,routes){
+    _unfiedSrv(req,res){
 
         const parsedUrl = url.parse(req.url,true);
         let buffer = '';
@@ -43,10 +46,10 @@ class Router{
             buffer += decoder.end();
             reqData.body = buffer;
 
-            let  choosenHandler = routes["default"];
+            let  choosenHandler = self.routes["default"];
 
-            if(typeof(routes[reqData.path]) !== "undefined")
-                choosenHandler = routes[reqData.path][reqData.method]? routes[reqData.path][reqData.method]:routes["default"];
+            if(typeof(self.routes[reqData.path]) !== "undefined")
+                choosenHandler = self.routes[reqData.path][reqData.method]? self.routes[reqData.path][reqData.method]:self.routes["default"];
                 
             const handlerResponse = choosenHandler(reqData, resData);
     
