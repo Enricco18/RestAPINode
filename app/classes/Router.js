@@ -4,11 +4,10 @@ const url = require('url');
 const { StringDecoder } = require('string_decoder');
 const decoder = new StringDecoder("utf-8");
 
-var self;
 
 class Router{
     constructor(credentials){
-        self = this;
+        this._unfiedSrv = this._unfiedSrv.bind(this);
 
         this.server = typeof(credentials) ==="undefined"?http.createServer(this._unfiedSrv):https.createServer(credentials,this._unfiedSrv);
         this.routes = {
@@ -46,10 +45,10 @@ class Router{
             buffer += decoder.end();
             reqData.body = buffer;
 
-            let  choosenHandler = self.routes["default"];
+            let  choosenHandler = this.routes["default"];
 
-            if(typeof(self.routes[reqData.path]) !== "undefined")
-                choosenHandler = self.routes[reqData.path][reqData.method]? self.routes[reqData.path][reqData.method]:self.routes["default"];
+            if(typeof(this.routes[reqData.path]) !== "undefined")
+                choosenHandler = this.routes[reqData.path][reqData.method]? this.routes[reqData.path][reqData.method]:this.routes["default"];
                 
             const handlerResponse = choosenHandler(reqData, resData);
     

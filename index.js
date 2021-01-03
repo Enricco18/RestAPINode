@@ -1,6 +1,7 @@
 const fs = require('fs');
 const {Router} = require('./app/classes/Router');
 const config = require('./config');
+const data = require('./lib/data').lib;
 
 const httpsConfig = {
     key: fs.readFileSync("./https/key.pem"),
@@ -10,15 +11,12 @@ const httpsConfig = {
 const httpsServer = new Router(httpsConfig);
 const httpServer = new Router();
 
+data.delete("teste","fileName",(err)=>{
+    console.log(err);
+})
 
-
-httpServer.get("oi",(req,res)=>{
-    res.data = {oi:"oi"}
-    return res;
-});
-
-httpServer.get("/",(req,res)=>{
-    res.httpCode = 201;
+httpServer.get("hello",(req,res)=>{
+    res.httpCode = 200;
     res.data = {"message":"Hello World!"};
     return res;
 });
